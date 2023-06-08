@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import { GoogleAuthProvider, createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { app } from "../Firebase/firebase.config";
+import axios from "axios";
 
 export const AuthContex = createContext(null);
 const auth = getAuth(app);
@@ -20,6 +21,12 @@ export const AuthProvider = ({ children }) => {
       return signInWithEmailAndPassword(auth, email, password);
    };
 
+   //Signin User With Google
+   const provider = new GoogleAuthProvider();
+   const signInWithGoogle = () => {
+      return signInWithPopup(auth, provider)
+   }
+
    //Logout User
    const logOut = () => {
       setLoading(true);
@@ -37,7 +44,22 @@ export const AuthProvider = ({ children }) => {
       const unsubcribe = onAuthStateChanged(auth, curerntUser => {
          setUser(curerntUser);
          console.log("Current User: ", curerntUser);
-         setLoading(false);
+
+         // get and set token
+
+         if (curerntUser) {
+            axios.post('http://localhost:5000/jwt', { email: curerntUser.email })
+               .then(data => {
+                  // console.log(data.data.token);
+                  localStorage.setItem('access-token', data.data.token)
+                  setLoading(false);
+               })
+         }
+         else {
+            localStorage.removeItem('access-token')
+         }
+
+         // setLoading(false);
       });
       return () => {
          return unsubcribe();
@@ -46,7 +68,7 @@ export const AuthProvider = ({ children }) => {
 
 
 
-   const authInfo = { user, loading, createUser, signInEmailPass, logOut, updateUserProfile }
+   const authInfo = { user, loading, createUser, signInEmailPass, logOut, updateUserProfile, signInWithGoogle }
    return (
       <AuthContex.Provider value={authInfo}>
          {children}

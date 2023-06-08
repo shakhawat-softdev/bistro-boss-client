@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 
 const Register = () => {
    const { createUser, updateUserProfile } = useContext(AuthContex)
-   const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
+   const { register, handleSubmit, reset, formState: { errors } } = useForm();
    const navigate = useNavigate()
 
 
@@ -23,24 +23,34 @@ const Register = () => {
             updateUserProfile(name, photoURL)
                .then(() => {
                   console.log('User Created Successfully');
-                  reset();
+                  const savedUser = { name: name, email: email };
+                  fetch('http://localhost:5000/users', {
+                     method: 'POST',
+                     headers: { 'content-type': 'application/json' },
+                     body: JSON.stringify(savedUser)
 
-                  Swal.fire({
-                     position: 'top-end',
-                     icon: 'success',
-                     title: 'User Created Successfully',
-                     showConfirmButton: false,
-                     timer: 1500
-                  });
+                  })
+                     .then(res => res.json())
+                     .then(data => {
+                        console.log(data);
+                        if (data.insertedId) {
+                           reset();
+                           Swal.fire({
+                              position: 'top-end',
+                              icon: 'success',
+                              title: 'User Created Successfully',
+                              showConfirmButton: false,
+                              timer: 1500
+                           });
+                        }
+                     })
 
                   navigate('/');
                })
+
                .catch(error => {
                   console.log(error)
                })
-
-
-
          })
          .catch(error => {
             console.error(error.massage)
@@ -61,9 +71,7 @@ const Register = () => {
                   <p className="py-6">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p>
                </div>
                <div className="card md: w-1/2 max-w-sm shadow-2xl bg-base-100">
-
-                  <form onSubmit={handleSubmit(onSubmit)} className="card-body">
-
+                  <form onSubmit={handleSubmit(onSubmit)} className="card-body ">
                      <div className="form-control">
                         <label className="label">
                            <span className="label-text">Name</span>

@@ -4,10 +4,11 @@ import { AuthContex } from '../../../Providers/AuthProvider';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Swal from 'sweetalert2';
+import SocialLogin from '../../SocialLogin/SocialLogin';
 
 const Login = () => {
    const { signInEmailPass } = useContext(AuthContex);
-   const [disable, setDisable] = useState(true)
+   const [disable, setDisable] = useState(true);
    const navigate = useNavigate();
    const location = useLocation();
    const from = location.state?.from?.pathname || '/'
@@ -49,8 +50,8 @@ const Login = () => {
             navigate(from, { replace: true });
          })
 
-         .then(error => {
-            console.error(error.message);
+         .catch(error => {
+            console.log(error.message);
          })
    };
 
@@ -89,17 +90,19 @@ const Login = () => {
                            <LoadCanvasTemplate />
                         </label>
                         <input type="text" name="captcha" placeholder="Type the captcha above" className="input input-bordered" onBlur={handleValidateCaptcha} />
-
                      </div>
 
+                     {/* TODO make button disable */}
                      <div className="form-control mt-6">
-                        <input disabled={disable} className="btn btn-primary" type="submit" value="Login" />
+                        <input disabled={false} className="btn btn-primary" type="submit" value="Login" />
                      </div>
 
                   </form>
                   <label className="label">
                      <p><small>New here?</small><Link to='/register'><span className="label-text-alt link link-hover"> Create an account</span></Link></p>
                   </label>
+                  <div className="divider">OR</div>
+                  <SocialLogin />
                </div>
             </div>
          </div>

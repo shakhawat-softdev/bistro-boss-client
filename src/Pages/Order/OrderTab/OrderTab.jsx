@@ -4,6 +4,7 @@ import "swiper/css";
 import "swiper/css/scrollbar";
 import { Pagination } from "swiper";
 
+//TODO PAGINATION IMPLEMENTAT
 
 const OrderTab = ({ items }) => {
    const pagination = {

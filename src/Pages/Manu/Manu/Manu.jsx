@@ -13,6 +13,7 @@ import SectionTitle from '../../../Components/SectionTitle';
 
 const Manu = () => {
    const [manu] = useManu();
+
    const dessert = manu.filter(item => item.category === 'dessert');
    const soup = manu.filter(item => item.category === 'soup');
    const salad = manu.filter(item => item.category === 'salad');
@@ -32,14 +33,10 @@ const Manu = () => {
 
          {/* Offer Manu Items */}
          <ManuCategory items={offered} />
-
-
          <ManuCategory items={dessert} title={"dessert"} coverImg={desertImg} />
          <ManuCategory items={pizza} title={"pizza"} coverImg={pzzaImg} />
          <ManuCategory items={salad} title={"salad"} coverImg={saladImg} />
          <ManuCategory items={soup} title={"soup"} coverImg={soupdImg} />
-
-
 
       </div>
 
